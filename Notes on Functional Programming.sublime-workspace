@@ -359,9 +359,17 @@
 	"build_system": "Packages/User/Cabal.sublime-build",
 	"command_palette":
 	{
-		"height": 96.0,
+		"height": 392.0,
 		"selected_items":
 		[
+			[
+				"ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"dis",
+				"Package Control: Disable Package"
+			],
 			[
 				"my se",
 				"My Preferences (Settings)"
@@ -400,7 +408,11 @@
 	},
 	"file_history":
 	[
+		"/home/flip/.config/sublime-text-2/Packages/sublime-github/README.md",
+		"/home/flip/.config/sublime-text-2/Packages/GitGutter/README.md",
+		"/home/flip/daten/studium/functional-programming/notesonfp/fp.tex",
 		"/home/flip/daten/studium/functional-programming/lecturetex/fp.tex",
+		"/home/flip/daten/studium/functional-programming/lecturetex/README",
 		"/home/flip/daten/studium/functional-programming/lecturetex/chapter03-values-and-types.tex",
 		"/home/flip/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
 		"/home/flip/daten/studium/functional-programming/lecturetex/Notes on Functional Programming.sublime-project",
@@ -676,12 +688,12 @@
 		"selected_items":
 		[
 			[
-				"val",
-				"chapter03-values-and-types.tex"
-			],
-			[
 				"te",
 				"fp.tex"
+			],
+			[
+				"val",
+				"chapter03-values-and-types.tex"
 			],
 			[
 				"sub",
@@ -803,6 +815,10 @@
 		"height": 500.0,
 		"selected_items":
 		[
+			[
+				"nhab",
+				"/home/flip/daten/studium/bachelorthesis/Habitat/habitat.sublime-project"
+			],
 			[
 				"ha",
 				"/home/flip/daten/studium/bachelorthesis/Habitat/habitat.sublime-project"
