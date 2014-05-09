@@ -1,3 +1,5 @@
+%!TEX root = fp.tex
+
 % Author: Philipp Moers <soziflip funny character gmail dot com>
 
 \chapter{Values and Types} % (fold)
@@ -49,7 +51,7 @@ The \textbf{type assigmnent ::} is either given explicitly or inferred by the co
 \section{Currying}
 
 \begin{itemize}
-  \item Recall: \codeline{e$_1$ ++ e$_2$} $\equiv$ \codeline{(++) e$_1$ e$_2$}
+  \item \textit{Recall}: \codeline{e$_1$ ++ e$_2$} $\equiv$ \codeline{(++) e$_1$ e$_2$}
   \item \codeline{(++) e$_1$ e$_2$} $\equiv$ \codeline{((++) e$_1$) e$_2$}
   \item Function application happens one argument at a time. \\ (\textbf{Currying}, Haskell B. Curry)
   \item Type of n-ary function is \\ a$_1$ -> a$_2$ -> \dots a$_n$ -> b
@@ -164,8 +166,77 @@ f p_n1 ... p_nk = e_k
 
 
 \codefile{haskell}{caption={tally.hs}, label=tally}{../material/tally.hs}
+\newpage
 \codefile{haskell}{caption={take.hs}, label=take}{../material/take.hs}
 \codefile{haskell}{caption={mergesort.hs}, label=mergesort}{../material/mergesort.hs}
+
+
+
+
+\section{Algebraic Data Types}
+
+(also known as \textbf{Sum-of-Product-Types})
+
+\begin{itemize}
+  \item \textit{Recall}: \codeline{[]} and \codeline{(:)} are the \textbf{values constructors} for \textbf{type constructor} [a]. 
+  \item Can define entirely new type T and its constructors K$_i$:
+        \begin{codebox}[haskell]
+data T a_1 a_2 ... a_n = K_1 b_11 ... b_1n_1
+                         K_2 b_21 ... b_2n_2
+                         ...
+                         K_r b_r1 ... b_rn_r
+        \end{codebox}
+        b\_ij types mentioning the type vars a\_1 ... a\_n
+
+  \item Defines type constructor T and r value constructors:\\
+        \codeline{K$_i$ :: b$_{i_1}$ -> b$_{i_2}$ -> \dots b$_{in_i}$ -> T a$_1$ \dots a$_n$}
+  \item Compare \codeline{[] :: [a]} and \codeline{(:) :: a -> [a] -> [a]}
+  \item \textbf{Sum Type} (n=0, n$_i$ = 0) 
+        \codefile{haskell}{caption={weekday.hs}, label=weekday}{../material/weekday.hs}
+  \item Add \codeline{deriving (c, c, \dots c)} to data declaration to define canonical operations: 
+  \vspace{9pt}\begin{center}\begin{tabular}{|c|c|}\hline
+  \rowcolor{grau} c       & operations                          \\\hline
+                  Eq      & equality (==, /=)                   \\\hline
+                  Show    & printing (show)                     \\\hline
+                  Ord     & ordering (<, <=, max)               \\\hline
+                  Enum    & enumeration                         \\\hline
+                  Bounded & minBound, maxBound                  \\\hline
+  \end{tabular}\end{center}\vspace{9pt}
+  \codefile{haskell}{caption={deriving.hs}, label=deriving}{../material/deriving.hs}
+  \item \textbf{Product Types} (r=1)
+  \codefile{haskell}{caption={sequence.hs}, label=sequence}{../material/sequence.hs}
+  \item \textbf{Sum-of-Product-Types}\\
+    \codeline{data Maybe a = Just a | Nothing}\\
+    \codeline{data Either a b = Left a | Right b}\\
+    \codeline{data List a = Nil | Cons a (List a)}
+    \codefile{haskell}{caption={cons.hs}, label=cons}{../material/cons.hs}
+    \textit{Anschauung zu liftList:}
+    % List a  - fromList ->   [a]
+    % | g                     ^ 
+    % v                       | g'
+    % List b  - toList  ->    [b]
+    \begin{center} \begin{tikzpicture}[node distance = 3cm]
+      \node                     (lista) {List a};
+      \node [below of = lista]   (listb) {List b};
+      \node [right of = lista]   (la) {[a]};
+      \node [right of = listb]   (lb) {[b]};
+      \path[->] (lista) edge[right] node[below] {fromList} (la)
+                (lb) edge[right] node[below] {toList} (listb)
+                (lista) edge[below] node[right] {g} (listb)
+                (la) edge[below] node[right] {g'} (lb)
+      ;
+    \end{tikzpicture} \end{center}
+
+  \codefile{haskell}{caption={eval-compile-run.hs}, label=eval-compile-run}{../material/eval-compile-run.hs}
+  \item \textit{Erläuterung zur Super-simple stack machine}:\\
+    \begin{itemize}
+      \item 'push' pushes a new element to the stack
+      \item 'DoAdd' substitutes the first two elements of the stack with their sum
+    \end{itemize}
+
+        
+\end{itemize}
+
 
 
 
