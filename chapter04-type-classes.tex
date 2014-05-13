@@ -15,7 +15,7 @@ class C a where
 \end{codebox}
 The \codeline{t\_i} \underline{must} mention a.\\
 For any \codeline{f\_i} the class may provide default implementations. \\
-We have \codeline{f\_i :: C a => t\_i} (read „if a is instance C then f\_i has type t\_i“).\\
+We have \codeline{f\_i :: C a => t\_i} \\ (read „if a is instance C then f\_i has type t\_i“).\\
 \codeline{C a} is called \textbf{class constraint}.
 
 \textit{Example}:
@@ -29,7 +29,7 @@ class Eq a where
 \end{codebox}
 (These are default implementations. To redefine one of them is sufficient.)
 
-% \codefile{haskell}{caption={type-classes.hs}, label=type-classes}{../material/type-classes.hs}
+\codefile{haskell}{caption={type-classes.hs}, label=type-classes}{../material/type-classes.hs}
 
 
 \section{Class Inheritance}
@@ -41,6 +41,7 @@ class Eq a where
 
 \vspace{9pt}
 % \includegraphics[scale=1.0]{type-class-inheritance.png}
+\textcolor{myorange}{[Here is an image missing]}
 \vspace{9pt}
 
 
@@ -67,7 +68,7 @@ An instance definition for type constructor t may formulate class constraints fo
 \codeline{instance (C\_1 a, C\_2 a, \dots) => C t where}
 
 
-% \codefile{haskell}{caption={rock-paper-scissor-inst.hs}, label=rock-paper-scissor-inst}{../material/rock-paper-scissor-inst.hs}
+\codefile{haskell}{caption={rock-paper-scissor-inst.hs}, label=rock-paper-scissor-inst}{../material/rock-paper-scissor-inst.hs}
 
 
 \subsection{Deriving Class Instances}
@@ -80,7 +81,7 @@ data T a_1 a_1 ... a_n = ...
     deriving (C_1, C_2, ...)
 \end{codebox}
 
-% \codefile{haskell}{caption={rock-paper-scissor-inst-deriving.hs}, label=rock-paper-scissor-inst-deriving}{../material/rock-paper-scissor-inst-deriving.hs}
+\codefile{haskell}{caption={rock-paper-scissor-inst-deriving.hs}, label=rock-paper-scissor-inst-deriving}{../material/rock-paper-scissor-inst-deriving.hs}
 
 
 
