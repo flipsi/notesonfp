@@ -1,0 +1,161 @@
+%!TEX root = fp.tex
+
+% Author: Philipp Moers <soziflip funny character gmail dot com>
+
+
+\chapter{Domain-Specific Languages} % (fold)
+\label{cha:domain_specific_languages}
+a.k.a. \textbf{DSLs}
+
+\begin{itemize}
+    \item ``small'''' languages designed to easily and directly express the concepts/idioms of a specific domain. \underline{Not} turing-complete in general.
+    \item Examples:
+        \vspace{9pt}\begin{center}\begin{tabular}{|c|c|}\hline
+        \rowcolor{grau} Domain          & DSLs                                  \\\hline
+                        OS automation   & shell scripts, OSX Automater          \\\hline
+                        Typesetting     & \LaTeX                                \\\hline
+                        Queries         & SQL                                   \\\hline
+                        Game Scripting  & Unreal Script, Lua                    \\\hline
+                        Parsing         & Yacc, Bison, ANTLR                    \\\hline
+        \end{tabular}\end{center}\vspace{9pt}
+    \item Functional Languages make good hosts for \textbf{embedded DSLs}:
+        \begin{itemize}
+            \item algebraic datatypes (e.g. to model ASTs)
+            \item higher-order functions (abstractionn, control constructs)
+            \item lightweight syntax (layout / whitespace, non-alphabetic ids)
+        \end{itemize}
+\end{itemize}
+
+
+\newpage
+
+\textit{Example}: An embedded DSL for integer sets:
+\begin{codebox}[haskell]
+type IntegerSet = 
+    -- constructors:
+    empty :: IntegerSet
+    insert :: Integer -> IntegerSet -> IntegerSet
+    delete :: Integer -> IntegerSet -> IntegerSet
+    -- observer:
+    member :: Integer -> IntegerSet -> Bool
+
+member 3 (insert 1 (delete 3 (insert 2 (insert 3 empty))))
+    @$\equiv$@ False
+\end{codebox}
+
+\vspace{2cm}
+
+\textbf{(1)}
+DSL as library of functions, implementation details exposed. 
+
+\vspace{9pt}
+% TODO encode unicode chars!!!
+% \codefile{haskell}{caption={library-exposed.hs}, label=library-exposed.hs}{../material/library-exposed.hs}
+\textcolor{myorange}{[Here is library-exposed.hs missing!]}
+\vspace{9pt}
+
+
+
+\section{Modules}
+
+\begin{itemize}
+    \item Group of related definitions (values, types) in a single file \\ (named ``M.hs'' / ``M.lhs''):
+    \begin{codebox}[haskell]
+module M where
+    type Predicate a = a -> Bool
+    id :: a -> a
+    id x = x
+    \end{codebox}
+    \item Hierarchy: module A.B.C.M in file A/B/C/M.hs
+    \item Access definitions in other module M:
+    \begin{codebox}[haskell]
+import M
+    \end{codebox}
+
+    \newpage
+    \item Explicit export lists hide all other definitions:
+    \begin{codebox}[haskell]
+module M (id) where
+    ...
+    -- type Predicate a not exported
+    \end{codebox}
+    \item \textbf{Abstract data types}:\\
+    export algebraic data types, but \underline{not} its constructors:
+        \begin{codebox}[haskell]
+module M (Rose, leaf) where
+    data Rose a = Node a [Rose a]
+    leaf :: a -> Rose a [Rose a]
+    leaf x = Node x []
+        \end{codebox}
+    \begin{itemize}
+        \item Export constructors:
+        \begin{codebox}[haskell]
+module M (Rose(Node), leaf) where
+    @\dots@
+-- or export all constructors:
+module M (Rose(..), leaf) where
+        \end{codebox}
+        \item Instance definitions (including deriving) are exported with their type.
+    \end{itemize}
+    \item Qualified imports to partition name space:
+    \begin{codebox}[haskell]
+import qualified M
+    ...
+    -- use M.foobar syntax
+    t :: M.Rose Char
+    t = M.leaf ``x''
+    \end{codebox}
+    \item Partially import module:
+    \begin{codebox}[haskell]
+-- only import nub and reverse
+import Data.List (nub, reverse)
+
+-- import whole module but without otherwise
+import Prelude hiding (otherwise)
+otherwise :: Bool
+otherwise = False -- harhar
+    \end{codebox}
+    \item Pass imported modules to importer of own module:
+    \begin{codebox}[haskell]
+module M (..., module Data.List, ...) where
+    import Data.List (nub)
+    \end{codebox}
+    \begin{codebox}[haskell]
+import qualified M
+    M.nub
+    \end{codebox}
+\end{itemize}
+
+% \codefile{haskell}{caption={SetLanguage.hs}, label=SetLanguage.hs}{../material/SetLanguage.hs}
+% \codefile{haskell}{caption={SetLanguageShallow.hs}, label=SetLanguageShallow.hs}{../material/SetLanguageShallow.hs}
+\codefile{haskell}{caption={SetLanguageShallowCard.hs}, label=SetLanguageShallowCard.hs}{../material/SetLanguageShallowCard.hs}
+\codefile{haskell}{caption={set-language-shallow.hs}, label=set-language-shallow.hs}{../material/set-language-shallow.hs}
+
+
+\vspace{2cm}
+
+\textbf{(2)}
+DSL as library of functions, abstract data type (module).
+\begin{itemize}
+    \item \textbf{Shallow DSL embedding}:\\
+    semantics of DSL operations directly expressed in terms of host language value (e.g. list or characteristic function)
+    \begin{itemize}
+        \item constructors (empty, insert, delete) perform the work, harder to add
+        \item observers (member) trivial
+    \end{itemize}
+    \item \textbf{Deep DSL embedding}:\\
+    DSL operations build an abstract syntax tree (AST) that represents applications and arguments
+    \begin{itemize}
+        \item constructors merely build the AST, very easy to add
+        \item observers interpret (traverse) the AST and perform the work
+    \end{itemize}
+    % \codefile{haskell}{caption={SetLanguageDeep.hs}, label=SetLanguageDeep.hs}{../material/SetLanguageDeep.hs}
+    \codefile{haskell}{caption={SetLanguageDeepCard.hs}, label=SetLanguageDeepCard.hs}{../material/SetLanguageDeepCard.hs}
+    \codefile{haskell}{caption={set-language-deep.hs}, label=set-language-deep.hs}{../material/set-language-deep.hs}
+
+\end{itemize}
+
+
+
+
+% chapter domain_specific_languages (end)

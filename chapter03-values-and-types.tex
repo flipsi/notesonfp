@@ -16,8 +16,8 @@ The \textbf{type assigmnent ::} is either given explicitly or inferred by the co
                     Int             & fixed-prec. integer                           & 0, 1, (-42)                           \\\hline
                     Integer         & arbitrary prec. integer                       & 10\textasciicircum 100                \\\hline
                     Float, Double   & single/double floating point (IEEE)           & 0.1, 1e02                             \\\hline
-                    Char            & Unicode character                             & 'x', '\textbackslash t', 
-                                                                                        '$\triangle$', '\textbackslash 8710'\\\hline
+                    Char            & Unicode character                             & ``x'', ``\textbackslash t'', 
+                                                                                        ``$\triangle$'', ``\textbackslash 8710''\\\hline
                     Bool            & Boolean                                       & True, False                           \\\hline
                     ()              & Unit                                          & ()                                    \\\hline
 \end{tabular}\end{center}\vspace{9pt}
@@ -38,7 +38,7 @@ The \textbf{type assigmnent ::} is either given explicitly or inferred by the co
                     Maybe a         & optional value of type a                      & \multirow{2}{3.7cm}{Just 42 :: Maybe Int 
                                                                                                          Nothing :: Maybe a}    \\
                                     &                                               &                               \\\hline
-                    Either a b      & choice                                        & \multirow{2}{5cm}{Left 'x' :: Either Char b
+                    Either a b      & choice                                        & \multirow{2}{5cm}{Left ``x'' :: Either Char b
                                                                                                      Right pi :: Either a Double}   \\
                                     &                                               &                               \\\hline
                     IO a            & \multirow{2}{4.2cm}{I/O actions that 
@@ -69,29 +69,29 @@ The \textbf{type assigmnent ::} is either given explicitly or inferred by the co
   \item A Haskell program is a set of bindings.
   \item Good style: give type assigmnents for top-level (global) bindings: 
   \begin{codebox}[haskell]
-f :: a_1 -> a_2 -> b
-f x_1 x_2 = e
+f :: a@$_1$@ -> a@$_2$@ -> b
+f x@$_1$@ x@$_2$@ = e
   \end{codebox}
 \end{itemize}
 
 \subsection{Guards}
 
-Guards are conditional expressions (something like 'switch' in Java).
+Guards are conditional expressions (something like ``switch'' in Java).
 They are a lot more readable and more powerful than \codeline{if \dots then \dots else \dots}.
 
 Guards are introduced by \codeline{|}:
 \begin{codebox}[haskell]
-f x_1 x_2 ... x_n
-  | q_1     = e_1
-  | q_2     = e_2
-  ...
-  | q_m     = e_m
-[ | otherwise   = e_m+1 ]
+f x@$_1$@ x@$_2$@ @\dots@ x@$_n$@
+  | q@$_1$@     = e@$_1$@
+  | q@$_2$@     = e@$_2$@
+  @\dots@
+  | q@$_m$@     = e@$_m$@
+[ | otherwise   = e@$_{m+1}$@ ]
 \end{codebox}
 
-Guards (q\_i) are expressions of type Bool, evaluated top to bottom.
+Guards (q$_i$) are expressions of type Bool, evaluated top to bottom.
 
-\codefile{haskell}{caption={factorial.hs}, label=factorial}{../material/factorial.hs}
+\codefile{haskell}{caption={factorial.hs}, label=factorial.hs}{../material/factorial.hs}
 
 
 
@@ -100,25 +100,25 @@ Guards (q\_i) are expressions of type Bool, evaluated top to bottom.
 \begin{enumerate}
   \item \textbf{Where bindings}: local definitions visible in the entire rhs of a definition.\\
   \begin{codebox}[haskell]
-f_1 x_1 x_2 ... x_n | q_1 = e_1
-                    | q_2 = e_2 
-                    ...
-                    | q_m = e_m 
+f@$_1$@ x@$_1$@ x@$_2$@ @\dots@ x@$_n$@ | q@$_1$@ = e@$_1$@
+                    | q@$_2$@ = e@$_2$@ 
+                    @\dots@
+                    | q@$_m$@ = e@$_m$@ 
           where 
-              g_1 = ...
-              g_2 = ...
-              ...
-              g_o
+              g@$_1$@ = @\dots@
+              g@$_2$@ = @\dots@
+              @\dots@
+              g@$_o$@
   \end{codebox}
 
-  \codefile{haskell}{caption={power.hs}, label=power}{../material/power.hs}
+  \codefile{haskell}{caption={power.hs}, label=power.hs}{../material/power.hs}
 
   \item \textbf{Let expressions}: local definitions visible inside one expression.\\
   \begin{codebox}[haskell]
-let g_1 = ...
-    g_2 = ...
-    ...
-    g_o
+let g@$_1$@ = @\dots@
+    g@$_2$@ = @\dots@
+    @\dots@
+    g@$_o$@
 in e
   \end{codebox}
 \end{enumerate}
@@ -145,11 +145,11 @@ in e
 \begin{itemize}
   \item \textit{The} idiomatic Haskell way to define a function by cases:
   \begin{codebox}[haskell]
-f :: a_1 -> ... a_n -> b
-f p_11 ... p_1k = e_1
-f p_21 ... p_2k = e_2
-...
-f p_n1 ... p_nk = e_k
+f :: a@$_1$@ -> @\dots@ a@$_n$@ -> b
+f p@$_11$@ @\dots@ p@$_1k$@ = e@$_1$@
+f p@$_21$@ @\dots@ p@$_2k$@ = e@$_2$@
+@\dots@
+f p@$_n1$@ @\dots@ p@$_nk$@ = e@$_k$@
   \end{codebox}
 
 \end{itemize}
@@ -165,10 +165,10 @@ f p_n1 ... p_nk = e_k
 \end{tabular}\end{center}\vspace{9pt}
 
 
-\codefile{haskell}{caption={tally.hs}, label=tally}{../material/tally.hs}
+\codefile{haskell}{caption={tally.hs}, label=tally.hs}{../material/tally.hs}
 \newpage
-\codefile{haskell}{caption={take.hs}, label=take}{../material/take.hs}
-\codefile{haskell}{caption={mergesort.hs}, label=mergesort}{../material/mergesort.hs}
+\codefile{haskell}{caption={take.hs}, label=take.hs}{../material/take.hs}
+\codefile{haskell}{caption={mergesort.hs}, label=mergesort.hs}{../material/mergesort.hs}
 
 
 
@@ -181,18 +181,18 @@ f p_n1 ... p_nk = e_k
   \item \textit{Recall}: \codeline{[]} and \codeline{(:)} are the \textbf{values constructors} for \textbf{type constructor} [a]. 
   \item Can define entirely new type T and its constructors K$_i$:
         \begin{codebox}[haskell]
-data T a_1 a_2 ... a_n = K_1 b_11 ... b_1n_1
-                         K_2 b_21 ... b_2n_2
-                         ...
-                         K_r b_r1 ... b_rn_r
+data T a@$_1$@ a@$_2$@ @\dots@ a@$_n$@ = K@$_1$@ b@$_{11}$@ @\dots@ b@$_{1_{n_1}}$@
+                     K@$_2$@ b@$_{21}$@ @\dots@ b@$_{2_{n_2}}$@
+                     @\dots@
+                     K@$_r$@ b@$_{r1}$@ @\dots@ b@$_{r_{n_r}}$@
         \end{codebox}
-        b\_ij types mentioning the type vars a\_1 ... a\_n
+        b$_{ij}$ types mentioning the type vars a$_1$ \dots a$_n$
 
   \item Defines type constructor T and r value constructors:\\
         \codeline{K$_i$ :: b$_{i_1}$ -> b$_{i_2}$ -> \dots b$_{in_i}$ -> T a$_1$ \dots a$_n$}
   \item Compare \codeline{[] :: [a]} and \codeline{(:) :: a -> [a] -> [a]}
   \item \textbf{Sum Type} (n=0, n$_i$ = 0) 
-        \codefile{haskell}{caption={weekday.hs}, label=weekday}{../material/weekday.hs}
+        \codefile{haskell}{caption={weekday.hs}, label=weekday.hs}{../material/weekday.hs}
   \item Add \codeline{deriving (c, c, \dots c)} to data declaration to define canonical operations: 
   \vspace{9pt}\begin{center}\begin{tabular}{|c|c|}\hline
   \rowcolor{grau} c       & operations                          \\\hline
@@ -202,18 +202,18 @@ data T a_1 a_2 ... a_n = K_1 b_11 ... b_1n_1
                   Enum    & enumeration                         \\\hline
                   Bounded & minBound, maxBound                  \\\hline
   \end{tabular}\end{center}\vspace{9pt}
-  \codefile{haskell}{caption={deriving.hs}, label=deriving}{../material/deriving.hs}
+  \codefile{haskell}{caption={deriving.hs}, label=deriving.hs}{../material/deriving.hs}
   \item \textbf{Product Types} (r=1)
-  \codefile{haskell}{caption={sequence.hs}, label=sequence}{../material/sequence.hs}
+  \codefile{haskell}{caption={sequence.hs}, label=sequence.hs}{../material/sequence.hs}
   \item \textbf{Sum-of-Product-Types}\\
     \codeline{data Maybe a = Just a | Nothing}\\
     \codeline{data Either a b = Left a | Right b}\\
     \codeline{data List a = Nil | Cons a (List a)}
-    \codefile{haskell}{caption={cons.hs}, label=cons}{../material/cons.hs}
+    \codefile{haskell}{caption={cons.hs}, label=cons.hs}{../material/cons.hs}
     \textit{Anschauung zu liftList:}
     % List a  - fromList ->   [a]
     % | g                     ^ 
-    % v                       | g'
+    % v                       | g''
     % List b  - toList  ->    [b]
     \begin{center} \begin{tikzpicture}[node distance = 3cm]
       \node                     (lista) {List a};
@@ -223,15 +223,15 @@ data T a_1 a_2 ... a_n = K_1 b_11 ... b_1n_1
       \path[->] (lista) edge[right] node[below] {fromList} (la)
                 (lb) edge[right] node[below] {toList} (listb)
                 (lista) edge[below] node[right] {g} (listb)
-                (la) edge[below] node[right] {g'} (lb)
+                (la) edge[below] node[right] {g''} (lb)
       ;
     \end{tikzpicture} \end{center}
 
-  \codefile{haskell}{caption={eval-compile-run.hs}, label=eval-compile-run}{../material/eval-compile-run.hs}
+  \codefile{haskell}{caption={eval-compile-run.hs}, label=eval-compile-run.hs}{../material/eval-compile-run.hs}
   \item \textit{Erläuterung zur Super-simple stack machine}:\\
     \begin{itemize}
-      \item 'push' pushes a new element to the stack
-      \item 'DoAdd' substitutes the first two elements of the stack with their sum
+      \item ``push'' pushes a new element to the stack
+      \item ``DoAdd'' substitutes the first two elements of the stack with their sum
     \end{itemize}
 
         

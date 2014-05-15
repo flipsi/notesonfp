@@ -5,14 +5,14 @@
 \chapter{Haskell Ramp-Up} % (fold)
 \label{cha:haskell_ramp_up}
 
-(Read $\equiv$ as 'denotes the same value as')
+(Read $\equiv$ as ``denotes the same value as'')
 
 \begin{itemize}
-    \item Apply f to value e: \codeline{f e} (juxtaposition, 'apply', binary operator \textvisiblespace, Haskell speak: infixL 10 \textvisiblespace)
+    \item Apply f to value e: \codeline{f e} (juxtaposition, ``apply'', binary operator \textvisiblespace, Haskell speak: infixL 10 \textvisiblespace)
     \item \textvisiblespace\ has max precedence (10): \codeline{f e$_1$ + e$_2$} $\equiv$ \codeline{(f e$_1$) + e$_2$}
-    \item \textvisiblespace\ associates to the left: \codeline{g f e} $\equiv$ \codeline{(g f) e} \\ ('\codeline{(g f)}' is a function) \item Function composition: \begin{itemize}
-        \item \codeline{( g . f ) e} $\equiv$ \codeline{g (f e)} \\ (. is something like mathematical $\circ$ 'after')
-        \item Alternative 'apply'-operator \codeline{\$} (lowest precedence, associates to the right, infixR $\emptyset\ \$$):\\
+    \item \textvisiblespace\ associates to the left: \codeline{g f e} $\equiv$ \codeline{(g f) e} \\ (\codeline{(g f)} is a function) \item Function composition: \begin{itemize}
+        \item \codeline{( g . f ) e} $\equiv$ \codeline{g (f e)} \\ (. is something like mathematical $\circ$ ``after'')
+        \item Alternative ``apply''-operator \codeline{\$} (lowest precedence, associates to the right, infixR $\emptyset\ \$$):\\
             \codeline{g \$ f \$ e} $\equiv$ \codeline{g \$ (f \$ e)} $\equiv$ \codeline{g (f e)}
         \item Prefix application of binary infix operator $\otimes$: \codeline{$(\otimes)$ e$_1$ e$_2$} $\equiv$ \codeline{e$_1$ $\otimes$ e$_2$} 
         \item Infix application of binary function f: \codeline{e$_1$ `f` e$_2$} $\equiv$ \codeline{f e$_1$ e$_2$}:
