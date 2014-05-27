@@ -103,7 +103,7 @@ import qualified M
     ...
     -- use M.foobar syntax
     t :: M.Rose Char
-    t = M.leaf ``x''
+    t = M.leaf 'x'
     \end{codebox}
     \item Partially import module:
     \begin{codebox}[haskell]
@@ -138,7 +138,7 @@ import qualified M
 DSL as library of functions, abstract data type (module).
 \begin{itemize}
     \item \textbf{Shallow DSL embedding}:\\
-    semantics of DSL operations directly expressed in terms of host language value (e.g. list or characteristic function)
+    Semantics of DSL operations directly expressed in terms of host language value (e.g. list or characteristic function)
     \begin{itemize}
         \item constructors (empty, insert, delete) perform the work, harder to add
         \item observers (member) trivial
@@ -154,6 +154,86 @@ DSL as library of functions, abstract data type (module).
     \codefile{haskell}{caption={set-language-deep.hs}, label=set-language-deep.hs}{../material/set-language-deep.hs}
 
 \end{itemize}
+
+\newpage 
+
+\codefile{haskell}{caption={ExprDeepNum.hs}, label={ExprDeepNum.hs}}{../material/ExprDeepNum.hs}
+\codefile{haskell}{caption={expr-deep-num.hs}, label={expr-deep-num.hs}}{../material/expr-deep-num.hs}
+
+% \codefile{haskell}{caption={expr-language.hs}, label={expr-language.hs}}{../material/expr-language.hs}
+
+
+% \codefile{haskell}{caption={ExprDeep.hs}, label={ExprDeep.hs}}{../material/ExprDeep.hs}
+% \codefile{haskell}{caption={ExprDeepGADTUntyped.hs}, label={ExprDeepGADTUntyped.hs}}{../material/ExprDeepGADTUntyped.hs}
+
+
+
+\section{Generalized Algebraic Data Types (GADTs)}
+
+\textit{Idea}: 
+\begin{itemize}
+    \item Encode the type of a DSL expression (here: Integer or Bool) in its \textbf{Haskell representation type}.
+    \item Use Haskell's type checker to ensure at compile time that only well-typed DSL expressions are built.
+\end{itemize}
+
+\textit{Language extensions:}\\
+\codeline{\{-\# LANGUAGE GADTs \#-\}}
+\begin{itemize}
+    \item Define new parameterized type T, its constructors k$_i$ and their type signatures:
+    \begin{codebox}[haskell]
+data T a@$_1$@ a@$_2$@ @\dots@ a@$_n$@ where
+    k@$_1$@ :: b@$_{11}$@ -> @\dots@ -> b@$_1n_1$@ -> T t@$_{11}$@ t@$_{1n}$@
+    @\dots@
+    k@$_r$@ :: b@$_{r1}$@ -> @\dots@ -> b@$_rn_r$@ -> T t@$_{r1}$@ t@$_{rn}$@
+    \end{codebox}
+\end{itemize}
+
+\codefile{haskell}{caption={ExprDeepGADTTyped.hs}, label={ExprDeepGADTTyped.hs}}{../material/ExprDeepGADTTyped.hs}
+\codefile{haskell}{caption={expr-language-typed.hs}, label={expr-language-typed.hs}}{../material/expr-language-typed.hs}
+
+% \codefile{haskell}{caption={ExprShallow.hs}, label={ExprShallow.hs}}{../material/ExprShallow.hs}
+% \codefile{haskell}{caption={expr-language-shallow.hs}, label={expr-language-shallow.hs}}{../material/expr-language-shallow.hs}
+\codefile{haskell}{caption={ExprShallowPrint.hs}, label={ExprShallowPrint.hs}}{../material/ExprShallowPrint.hs}
+\codefile{haskell}{caption={expr-language-shallow-print.hs}, label={expr-language-shallow-print.hs}}{../material/expr-language-shallow-print.hs}
+
+
+
+\section{Shallow embedding of a String Matching DSL}
+
+\begin{itemize}
+    \item \textbf{Pattern}:
+    \begin{enumerate}
+        \item Given a String, a pattern returns the list of matches. Match failure? Returns the empty list.
+        \item A match consists of a value (e.g. the matched characters, tokens, parse trees) and the residual String left to match.
+    \end{enumerate}
+    Thus: \codeline{type Pattern a = String -> [(a, String)]}
+\end{itemize}
+
+\subsection{DSL design}
+\vspace{9pt}\begin{center}\begin{tabular}{|c|c|c|}\hline
+\rowcolor{grau} Pattern                 &               & DSL function     \\\hline
+                match lit. char         & "x"           & \codeline{lit :: Char -> Pattern Char}    \\\hline
+                match empty string      & $\epsilon$    & \codeline{empty :: a -> Pattern a}        \\\hline
+                fail always             & $\emptyset$   & \codeline{fail :: Pattern a}              \\\hline
+                alternative             & |             & \parbox[t]{9cm}{\codeline{alt :: Pattern a ->} \\ \codeline{Pattern a -> Pattern a}}  \\\hline
+                sequence                & .             & \parbox[t]{9cm}{\codeline{seq :: (a -> b -> c) ->} \\ \codeline{Pattern a -> Pattern b -> Pattern c}} \\\hline
+                repitition              & *             & \codeline{rep :: Pattern a -> Pattern [a]} \\\hline
+\end{tabular}\end{center}\vspace{9pt}
+
+% \codefile{haskell}{caption={PatternMatch.hs}, label={PatternMatch.hs}}{./PatternMatch.hs}
+% \codefile{haskell}{caption={pattern-match.hs}, label={pattern-match.hs}}{./pattern-match.hs}
+\codefile{haskell}{caption={PatternMatching.hs}, label={PatternMatching.hs}}{../material/PatternMatching.hs}
+\codefile{haskell}{caption={simple-patterns.hs}, label={simple-patterns.hs}}{../material/simple-patterns.hs}
+
+\codefile{haskell}{caption={pattern-matching.hs}, label={pattern-matching.hs}}{../material/pattern-matching.hs}
+
+
+
+
+
+
+
+
 
 
 
