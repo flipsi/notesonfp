@@ -1,0 +1,156 @@
+%!TEX root = fp.tex
+
+% Author: Philipp Moers <soziflip funny character gmail dot com>
+
+\chapter{Monads} % (fold)
+\label{cha:monads}
+
+
+\begin{codebox}[haskell]
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+f . g = \x -> f (g x)
+(>=>) :: (a -> b) -> (b -> c) -> (a -> c)
+f >=> g = g . f
+\end{codebox}
+\begin{itemize}
+    \item \codeline{f$_1$ >=> f$_2$ >=> \dots >=> f$_n$} composes the function in left-to-right order (think UNIX pipes)
+    \item \codeline{(>=>, id)} forms a monoid: \codeline{>=>} is associative with identify id.
+\end{itemize}
+
+
+\section{Sequencing of partial functions \codeline{a -> Maybe b}}
+
+\begin{itemize}
+    \item Return Nothing as soon as first function in sequence yields Nothing:\\
+        \begin{codebox}[haskell]
+(>=>) :: (a -> Maybe b) -> (b -> Maybe c) -> (a -> Maybe c)
+f >=> g = \x -> case f x of
+        Nothing -> Nothing
+        Just y  -> g y
+        \end{codebox}
+\end{itemize}
+
+\codefile{haskell}{caption={sequence-Maybe.hs}, label={sequence-Maybe.hs}}{../material/sequence-Maybe.hs_ASCII}
+
+
+\section*{Sequencing exception-generating functions \codeline{a -> Exc b}}
+
+\codeline{type Exc b = Either Error b}
+ 
+\begin{itemize}
+    \item Define suitable representation type for Error (\codeline{type Error = String})
+    \item Exceptions are propagated once occured:
+\begin{codebox}[haskell]
+f >=> g = \x -> case f x of
+    Left err -> Left err
+    Right y  -> g y
+\end{codebox}
+\end{itemize}
+
+\codefile{haskell}{caption={sequence-Either.hs}, label={sequence-Either.hs}}{../material/sequence-Either.hs_ASCII}
+
+
+\section*{Sequencing non-deterministic functions \codeline{a -> NonDet b}}
+
+\begin{itemize}
+    \item Non-determinism any answer in a \underline{list} of answers:\\
+    \codeline{type NonDet b = [b]}
+    \item Take all possible answers into account:\\
+\begin{codebox}[haskell]
+(>=>) :: (a -> NonDet b) -> (b -> NonDet c) -> (a -> NonDet c)
+f >=> g = \x -> concat [ g y | y <- f x ]
+\end{codebox}
+\end{itemize}
+
+
+\section*{Sequencing stateful functions \codeline{a -> State -> (b, State)}}
+
+\begin{itemize}
+    \item State Transformer: \codeline{type ST b = State -> (b, State)}
+    \item Stateful function: \codeline{a -> ST b}
+    \item Define suitable representation of state State
+\begin{codebox}[haskell]
+(>=>) :: (a -> ST b) -> (b -> ST c) -> (a -> ST c)
+f >=> g = \x s0 -> let (y, s1) = f x s0
+                   in g y s1
+\end{codebox}
+
+\codefile{haskell}{caption={sequence-ST.hs}, label={sequence-ST.hs}}{../material/sequence-ST.hs_ASCII}
+
+
+\section*{Sequencing side-effecting functions \codeline{a -> World -> (b, World)}}
+
+\begin{itemize}
+    \item Side effects: functions consume current ``world state'', return new state along with result.
+\begin{codebox}[haskell]
+type World = ... -- abstract (defined by Haskell's runtime)
+type IO b = World -> (b, World)
+\end{codebox}
+    \item Value of type IO b is an action that
+    \begin{enumerate}
+        \item \underline{when performed} has a side effect on the world
+        \item returns a value of type b
+    \end{enumerate}
+    \item Haskell built-ins:
+    \begin{itemize}
+        \item \codeline{print :: Show a => a -> IO ()}
+        \item \codeline{putStrLn :: String -> IO ()}
+        \item \codeline{getLine :: IO String}
+        \item \codeline{readFile :: FilePath -> IO String}
+        \item \codeline{(>=>) :: (a -> IO b) -> (b -> IO c) -> (a -> IO c)}
+    \end{itemize}
+\end{itemize}
+
+
+\section*{Abstraction of Sequencing functions}
+
+\codeline{(>=>) :: (a -> m b) -> (b -> m c) -> (a -> m c)}
+
+\begin{itemize}
+    \item Type class \textbf{Monad}
+\begin{codebox}[haskell]
+class Monad m where
+    return :: a -> m 
+    (>>=) :: m a -> (a -> m b) -> m b
+\end{codebox}
+\end{itemize}
+
+\vspace{9pt}\begin{center}\begin{tabular}{|c|c|}\hline
+\rowcolor{grau} Monad m             & return x (lifting)    \\\hline
+                Maybe               & Just x                \\\hline
+                Exc                 & Right x               \\\hline
+                NonDet              & [x]                   \\\hline
+                ST                  & \textbackslash s -> (x, s)          \\\hline
+\end{tabular}\end{center}\vspace{9pt}
+
+\begin{codebox}[haskell]
+instance Monad Maybe where
+    return x = Just x
+    Nothing >>= g = Nothing
+    Just y  >>= g = g y
+\end{codebox}
+
+\subsection*{Kleisli Composition}
+\begin{codebox}[haskell]
+(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+f >=> g = \x -> f x >>= g
+\end{codebox}
+
+\codefile{haskell}{caption={monadic-Maybe.hs}, label={monadic-Maybe.hs}}{../material/monadic-Maybe.hs_ASCII}
+\codefile{haskell}{caption={monadic-Either.hs}, label={monadic-Either.hs}}{../material/monadic-Either.hs_ASCII}
+\codefile{haskell}{caption={monadic-ST.hs}, label={monadic-ST.hs}}{../material/monadic-ST.hs_ASCII}
+\codefile{haskell}{caption={monadic-NonDet.hs}, label={monadic-NonDet.hs}}{../material/monadic-NonDet.hs_ASCII}
+
+
+
+
+
+\end{itemize}
+
+
+
+% chapter monads (end)
+
+
+
+
