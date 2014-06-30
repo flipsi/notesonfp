@@ -18,7 +18,8 @@ f >=> g = g . f
 \end{itemize}
 
 
-\section{Sequencing of partial functions \codeline{a -> Maybe b}}
+\section{Sequencing of partial functions} 
+(\codeline{a -> Maybe b})
 
 \begin{itemize}
     \item Return Nothing as soon as first function in sequence yields Nothing:\\
@@ -74,6 +75,9 @@ f >=> g = \x -> concat [ g y | y <- f x ]
 f >=> g = \x s0 -> let (y, s1) = f x s0
                    in g y s1
 \end{codebox}
+\end{itemize}
+
+
 
 \codefile{haskell}{caption={sequence-ST.hs}, label={sequence-ST.hs}}{../material/sequence-ST.hs_ASCII}
 
@@ -141,11 +145,103 @@ f >=> g = \x -> f x >>= g
 \codefile{haskell}{caption={monadic-ST.hs}, label={monadic-ST.hs}}{../material/monadic-ST.hs_ASCII}
 \codefile{haskell}{caption={monadic-NonDet.hs}, label={monadic-NonDet.hs}}{../material/monadic-NonDet.hs_ASCII}
 
+\newpage
 
+\section*{do-Notation}
 
+\begin{itemize}
+    \item (\codeline{e}: expr. of type \codeline{m a}, \codeline{es}: sequence of \codeline{;}-separated expressions)
+    \begin{codebox}[haskell]
+    do {e} @$\equiv$@ e
+    do {x <- e; es} @$\equiv$@
+        e >>= \x -> do {es}
+    do {e; es} @$\equiv$@
+        e >>= \_ -> do {es} -- >>
+    do {let v=x; es} @$\equiv$@ let v = x in do {es}
+    \end{codebox}
 
+    \item \codeline{do \{\dots\} :: m b}
+    \item May use layout instead of \codeline{\{\dots\}} and \codeline{;}.
 
 \end{itemize}
+
+\codefile{haskell}{caption={monadic-do-NonDet.hs}, label={monadic-do-NonDet.hs}}{../material/monadic-do-NonDet.hs}
+
+
+\section*{Input/Output}
+Key idea: Decouple the \underline{pure} construction of I/O actions from their \underline{effectful} execution.
+\begin{itemize}
+    \item Construct (complex) I/O actions of type \codeline{IO a} using \codeline{getLine}, \codeline{putStrLn}, \codeline{>>=}. \underline{No I/O or side effects happened yet.}
+    \item Execute constructed IO actions. Side effects will occur and a value of type a will be returned. \underline{Only} the IO action returned by function \codeline{main} is executed by Haskell's runtime system.
+\end{itemize}
+
+\codefile{haskell}{caption={IOaction.hs}, label={IOaction.hs}}{../material/IOaction.hs_ASCII}
+
+\textit{\href{http://www.google.com/search?q=free+monads}{google ``free monads''}}
+
+
+\section*{Monad Laws}
+
+\begin{enumerate}
+    \item \codeline{return x >>= g} $\equiv$ \codeline{g x}
+    \item \codeline{m >>= return} $\equiv$ \codeline{m}
+    \item \codeline{m >>= f >>= g} $\equiv$ m >>= (\textbackslash x -> f x >>= g)
+\end{enumerate}
+
+% \codefile{haskell}{caption={monad-laws.lhs}, label={monad-laws.lhs}}{../material/monad-laws.lhs}
+
+
+\section*{Another Monad}
+
+\begin{codebox}[haskell]
+data Perhaps a = Perhaps { value :: a, prohability :: Prob}
+deriving (Show)
+\end{codebox}
+
+Generalized \codeline{Maybe a}
+\begin{itemize}
+    \item \codeline{Just x} $\equiv$ \codeline{always x = Perhaps x 1.0}
+    \item \codeline{Nothing} $\equiv$ \codeline{never = Perhaps undefined 0.0}
+\end{itemize}
+\codeline{newtype Prob = P Float}
+
+\begin{itemize}
+    \item Language extension \emph{GeneralizedNewtypeDeriving}: newtype of the form \\ \codeline{newtype T = k a} may inherit instances from its representations type a, eg.
+    \begin{codebox}[haskell]
+    newtype Prob = P Float
+        deriving (Eq, Ord, Num, Real, Fractional, RealFrac)
+    \end{codebox}
+\end{itemize}
+
+\codefile{haskell}{caption={Perhaps.hs}, label={Perhaps.hs}}{../material/Perhaps.hs}
+\codefile{haskell}{caption={hiking.hs}, label={hiking.hs}}{../material/hiking.hs}
+
+
+\subsection*{Combination of Monads}
+
+\begin{codebox}[haskell]
+a -> Maybe (Perhaps b)
+a -> [Perhaps b] -- probability distribution
+\end{codebox}
+
+% \codefile{haskell}{caption={MayP-Dist}, label={MayP-Dist}}{../material/MayP-Dist}
+
+\textbf{Monad Transformer}
+\begin{itemize}
+    \item Define \codeline{PerhapsT m a} which wraps (arbitrary) monad m around the inner monad Perhaps. PerhapsT is called a \textbf{monad transformer}.
+\end{itemize}
+\codefile{haskell}{caption={Probability.hs}, label={Probability.hs}}{../material/Probability.hs}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
