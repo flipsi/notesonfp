@@ -1,0 +1,53 @@
+%!TEX root = fp.tex
+
+% Author: Philipp Moers <soziflip funny character gmail dot com>
+
+
+\chapter{Parallelism} % (fold)
+\label{cha:parallelism}
+(`//ism')
+
+
+\section*{semi-explicit parallelism (1)}
+
+Combinator \codeline{par :: a -> b -> b} (module Control.Parallel) \codeline{e$_1$ `par` e$_2$}
+indicates that it may be beneficial to evaluate \codeline{e$_1$} and \codeline{e$_2$} in parallel. Haskell runtime wraps evaluation of \codeline{e$_1$} in a \textbf{spark}, a a computation that \underline{may} be evaluated in a parallel thread.\\
+Result is \codeline{e$_2$}. 
+
+% \codefile{haskell}{caption={parFibPie.hs}, label={parFibPie.hs}}{../material/parFibPie.hs}
+
+
+Compile Haskell program with runtime system (RTS)\\
+\codeline{ghc -threaded-rtsopts -eventlog [--make] \textit{prog}.hs}\\
+Specify RTS option and run:\\
+\codeline{prog [options] +RTS -N\textit{n} -A\textit{size} -s -l -RTS}
+
+\begin{itemize}
+    \item \codeline{-N\textit{n}} run with \textit{n} parallel threads (e.g. number of CPUs in system)
+    \item \codeline{-A\textit{size}} allocation area for garbage collector (default is \SI{512}{\kibi\byte})
+    \item \codeline{-s} profiling summary
+    \item \codeline{-l} write event log (e.g. spark conversion) -> ThreadScope
+\end{itemize}
+
+
+
+\section*{semi-explicit parallelism (2)}
+
+Combinator \codeline{pseq :: a -> b -> b} \codeline{e$_1$ `pseq` e$_2$}
+evaluates \codeline{e$_1$} and then return \codeline{e$_2$} (sequentially on the same thread).
+
+Example: Parallel evaluation of arguments in application\\
+\begin{codebox}[haskell]
+f x y = 
+    x `par` (y `pseq` (f x y))
+\end{codebox}
+
+
+
+
+
+
+
+
+% chapter parallelism (end)
+

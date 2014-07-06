@@ -177,15 +177,18 @@ Key idea: Decouple the \underline{pure} construction of I/O actions from their \
 
 \codefile{haskell}{caption={IOaction.hs}, label={IOaction.hs}}{../material/IOaction.hs_ASCII}
 
+\vspace{9pt} 
+
 \textit{\href{http://www.google.com/search?q=free+monads}{google ``free monads''}}
 
+\newpage
 
 \section*{Monad Laws}
 
 \begin{enumerate}
     \item \codeline{return x >>= g} $\equiv$ \codeline{g x}
     \item \codeline{m >>= return} $\equiv$ \codeline{m}
-    \item \codeline{m >>= f >>= g} $\equiv$ m >>= (\textbackslash x -> f x >>= g)
+    \item \codeline{m >>= f >>= g} $\equiv$ \codeline{m >>= (\textbackslash x -> f x >>= g)}
 \end{enumerate}
 
 % \codefile{haskell}{caption={monad-laws.lhs}, label={monad-laws.lhs}}{../material/monad-laws.lhs}
@@ -224,7 +227,7 @@ a -> Maybe (Perhaps b)
 a -> [Perhaps b] -- probability distribution
 \end{codebox}
 
-% \codefile{haskell}{caption={MayP-Dist}, label={MayP-Dist}}{../material/MayP-Dist}
+% \codefile{haskell}{caption={MayP-Dist.hs}, label={MayP-Dist.hs}}{../material/MayP-Dist.hs}
 
 \textbf{Monad Transformer}
 \begin{itemize}
@@ -232,7 +235,23 @@ a -> [Perhaps b] -- probability distribution
 \end{itemize}
 \codefile{haskell}{caption={Probability.hs}, label={Probability.hs}}{../material/Probability.hs}
 
+% \codefile{haskell}{caption={dice-marbles.hs}, label={dice-marbles.hs}}{../material/dice-marbles.hs}
 
+
+Explanation of Functor instance for Perhaps:
+m $\equiv$ Perhaps
+
+\begin{codebox}[haskell]
+  fmap f (Perhaps v p)
+= do y <- Perhaps v p; return (f y)
+= Perhaps v p >>= \y -> return (f y)
+= Perhaps v p >>= \y -> always (f y)
+= Perhaps v p >>= \y -> Perhaps (f y) 1.0
+= Perhaps (f v) (p * 1.0)
+= Perhaps (f v) p
+\end{codebox}
+
+Haskell package \textbf{transformers} implements monad transformers for many standard monads.
 
 
 
