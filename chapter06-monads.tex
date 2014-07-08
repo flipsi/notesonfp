@@ -243,12 +243,12 @@ m $\equiv$ Perhaps
 
 \begin{codebox}[haskell]
   fmap f (Perhaps v p)
-= do y <- Perhaps v p; return (f y)
-= Perhaps v p >>= \y -> return (f y)
-= Perhaps v p >>= \y -> always (f y)
-= Perhaps v p >>= \y -> Perhaps (f y) 1.0
-= Perhaps (f v) (p * 1.0)
-= Perhaps (f v) p
+@$\equiv$@ do y <- Perhaps v p; return (f y)
+@$\equiv$@ Perhaps v p >>= \y -> return (f y)
+@$\equiv$@ Perhaps v p >>= \y -> always (f y)
+@$\equiv$@ Perhaps v p >>= \y -> Perhaps (f y) 1.0
+@$\equiv$@ Perhaps (f v) (p * 1.0)
+@$\equiv$@ Perhaps (f v) p
 \end{codebox}
 
 Haskell package \textbf{transformers} implements monad transformers for many standard monads.
