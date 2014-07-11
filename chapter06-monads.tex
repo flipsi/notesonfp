@@ -34,7 +34,7 @@ f >=> g = \x -> case f x of
 \codefile{haskell}{caption={sequence-Maybe.hs}, label={sequence-Maybe.hs}}{../material/sequence-Maybe.hs_ASCII}
 
 
-\section*{Sequencing exception-generating functions \codeline{a -> Exc b}}
+\section{Sequencing exception-generating functions \codeline{a -> Exc b}}
 
 \codeline{type Exc b = Either Error b}
  
@@ -51,7 +51,7 @@ f >=> g = \x -> case f x of
 \codefile{haskell}{caption={sequence-Either.hs}, label={sequence-Either.hs}}{../material/sequence-Either.hs_ASCII}
 
 
-\section*{Sequencing non-deterministic functions \codeline{a -> NonDet b}}
+\section{Sequencing non-deterministic functions \codeline{a -> NonDet b}}
 
 \begin{itemize}
     \item Non-determinism any answer in a \underline{list} of answers:\\
@@ -64,7 +64,7 @@ f >=> g = \x -> concat [ g y | y <- f x ]
 \end{itemize}
 
 
-\section*{Sequencing stateful functions \codeline{a -> State -> (b, State)}}
+\section{Sequencing stateful functions \codeline{a -> State -> (b, State)}}
 
 \begin{itemize}
     \item State Transformer: \codeline{type ST b = State -> (b, State)}
@@ -82,7 +82,7 @@ f >=> g = \x s0 -> let (y, s1) = f x s0
 \codefile{haskell}{caption={sequence-ST.hs}, label={sequence-ST.hs}}{../material/sequence-ST.hs_ASCII}
 
 
-\section*{Sequencing side-effecting functions \codeline{a -> World -> (b, World)}}
+\section{Sequencing side-effecting functions \codeline{a -> World -> (b, World)}}
 
 \begin{itemize}
     \item Side effects: functions consume current ``world state'', return new state along with result.
@@ -106,7 +106,7 @@ type IO b = World -> (b, World)
 \end{itemize}
 
 
-\section*{Abstraction of Sequencing functions}
+\section{Abstraction of Sequencing functions}
 
 \codeline{(>=>) :: (a -> m b) -> (b -> m c) -> (a -> m c)}
 
@@ -134,7 +134,7 @@ instance Monad Maybe where
     Just y  >>= g = g y
 \end{codebox}
 
-\subsection*{Kleisli Composition}
+\subsection{Kleisli Composition}
 \begin{codebox}[haskell]
 (>=>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
 f >=> g = \x -> f x >>= g
@@ -147,7 +147,7 @@ f >=> g = \x -> f x >>= g
 
 \newpage
 
-\section*{do-Notation}
+\section{do-Notation}
 
 \begin{itemize}
     \item (\codeline{e}: expr. of type \codeline{m a}, \codeline{es}: sequence of \codeline{;}-separated expressions)
@@ -168,7 +168,7 @@ f >=> g = \x -> f x >>= g
 \codefile{haskell}{caption={monadic-do-NonDet.hs}, label={monadic-do-NonDet.hs}}{../material/monadic-do-NonDet.hs}
 
 
-\section*{Input/Output}
+\section{Input/Output}
 Key idea: Decouple the \underline{pure} construction of I/O actions from their \underline{effectful} execution.
 \begin{itemize}
     \item Construct (complex) I/O actions of type \codeline{IO a} using \codeline{getLine}, \codeline{putStrLn}, \codeline{>>=}. \underline{No I/O or side effects happened yet.}
@@ -183,7 +183,7 @@ Key idea: Decouple the \underline{pure} construction of I/O actions from their \
 
 \newpage
 
-\section*{Monad Laws}
+\section{Monad Laws}
 
 \begin{enumerate}
     \item \codeline{return x >>= g} $\equiv$ \codeline{g x}
@@ -191,10 +191,10 @@ Key idea: Decouple the \underline{pure} construction of I/O actions from their \
     \item \codeline{m >>= f >>= g} $\equiv$ \codeline{m >>= (\textbackslash x -> f x >>= g)}
 \end{enumerate}
 
-% \codefile{haskell}{caption={monad-laws.lhs}, label={monad-laws.lhs}}{../material/monad-laws.lhs}
+\codefile{haskell}{caption={monad-laws.lhs}, label={monad-laws.lhs}}{../material/monad-laws.lhs_ASCII}
 
 
-\section*{Another Monad}
+\section{Another Monad}
 
 \begin{codebox}[haskell]
 data Perhaps a = Perhaps { value :: a, prohability :: Prob}
@@ -220,14 +220,14 @@ Generalized \codeline{Maybe a}
 \codefile{haskell}{caption={hiking.hs}, label={hiking.hs}}{../material/hiking.hs}
 
 
-\subsection*{Combination of Monads}
+\subsection{Combination of Monads}
 
 \begin{codebox}[haskell]
 a -> Maybe (Perhaps b)
 a -> [Perhaps b] -- probability distribution
 \end{codebox}
 
-% \codefile{haskell}{caption={MayP-Dist.hs}, label={MayP-Dist.hs}}{../material/MayP-Dist.hs}
+\codefile{haskell}{caption={MayP-Dist.hs}, label={MayP-Dist.hs}}{../material/MayP-Dist.hs}
 
 \textbf{Monad Transformer}
 \begin{itemize}

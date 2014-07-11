@@ -8,13 +8,13 @@
 (`//ism')
 
 
-\section*{semi-explicit parallelism (1)}
+\section{semi-explicit parallelism (1)}
 
 Combinator \codeline{par :: a -> b -> b} (module Control.Parallel) \codeline{e$_1$ `par` e$_2$}
 indicates that it may be beneficial to evaluate \codeline{e$_1$} and \codeline{e$_2$} in parallel. Haskell runtime wraps evaluation of \codeline{e$_1$} in a \textbf{spark}, a a computation that \underline{may} be evaluated in a parallel thread.\\
 Result is \codeline{e$_2$}. 
 
-% \codefile{haskell}{caption={parFibPie.hs}, label={parFibPie.hs}}{../material/parFibPie.hs}
+\codefile{haskell}{caption={parFibPie.hs}, label={parFibPie.hs}}{../material/parFibPie.hs_ASCII}
 
 
 Compile Haskell program with runtime system (RTS)\\
@@ -31,7 +31,7 @@ Specify RTS option and run:\\
 
 
 
-\section*{semi-explicit parallelism (2)}
+\section{semi-explicit parallelism (2)}
 
 Combinator \codeline{pseq :: a -> b -> b} \codeline{e$_1$ `pseq` e$_2$}
 evaluates \codeline{e$_1$} and then return \codeline{e$_2$} (sequentially on the same thread).
@@ -44,6 +44,92 @@ f x y =
 
 
 
+\section{Lazyness}
+
+% \codefile{haskell}{caption={parFibPies.hs}, label={parFibPies.hs}}{../material/parFibPies.hs}
+
+Lazy reductions of expressions to values:
+
+\begin{enumerate}
+    \item Subexpression are turned into \textbf{thunks} (values to be evaluated).
+    \item A thunk is evaluated to WHBF (see below) \underline{only if it this demanded.}
+    \item A thunk is never evaluated twice (overwritten with its value).
+\end{enumerate}
+
+\subsection{Weak Head Normal Form}
+
+Expression \codeline{e} is in WHNF if it is
+\begin{itemize}
+    \item an atomic value
+    \item a value constructor, possibly applied to arguments (e.g. \codeline{Just \_}, \codeline{\_:\_}, \codeline{(\_,\_)})
+    \item a function (applied to too few arguments) (e.g. \codeline{\_ + \_}, \codeline{\textbackslash x -> \_})
+\end{itemize}
+
+
+\textit{Note:} The left argument of \codeline{pseq}/\codeline{par} is reduced to WHNF only!
+
+% \codefile{haskell}{caption={parWHNF.hs}, label={parWHNF.hs}}{../material/parWHNF.hs}
+
+% \begin{codebox}[haskell]
+% -- really evaluate a list
+% forceList :: [a] -> ()
+% forceList []     = ()
+% forceList (x:xs) = x `pseq` forceList xs
+% \end{codebox}
+
+
+% \codefile{haskell}{caption={NFData.hs}, label={NFData.hs}}{../material/NFData.hs}
+\codefile{haskell}{caption={parFibPie-force.hs}, label={parFibPie-force.hs}}{../material/parFibPie-force.hs_ASCII}
+
+\codefile{haskell}{caption={DeepSeq.hs}, label={DeepSeq.hs}}{../material/DeepSeq.hs}
+
+
+\subsection{NFData}
+
+\begin{itemize}
+    \item Class \codeline{NFData a}: types \codeline{a} that support explicit evaluation to normal form (NF) via \codeline{rnf}
+    \item Use \codeline{e$_1$ `deepseq` e$_2$} or \codeline{force e$_1$} to evaluate \codeline{e$_1$} to NF.
+\end{itemize}
+
+
+% \codefile{haskell}{caption={SuperParIndices.hs}, label={SuperParIndices.hs}}{../material/SuperParIndices.hs}
+
+Creating sparks for too many / too small granules of computation is inefficient!
+We need to control \textbf{granularity} of parallelism.
+
+\codefile{haskell}{caption={ParIndices.hs}, label={ParIndices.hs}}{../material/ParIndices.hs}
+
+\codefile{haskell}{caption={indices.hs}, label={indices.hs}}{../material/indices.hs}
+
+
+
+\subsection{Monoid Reduction}
+
+\begin{codebox}[haskell]
+    f x@$_1$@ @$\oplus$@ (f x@$_2$@ @$\oplus$@ (f x@$_3$@ @$\oplus$@ f x@$_4$@))
+@$\equiv$@ (f x@$_1$@ @$\oplus$@ f x@$_2$@) @$\oplus$@ (f x@$_3$@ @$\oplus$@ f x@$_4$@)
+\end{codebox}
+
+This structure is perfect for dividing a computation into thunks.
+
+Monoids are
+\begin{itemize}
+    \item \codeline{((+), 0)}
+    \item \codeline{((++), [])}
+    \item \codeline{((\&\&), True)}
+    \item \codeline{((||), False)}
+    \item \dots
+\end{itemize}
+
+
+\codefile{haskell}{caption={ParFoldMap.hs}, label={ParFoldMap.hs}}{../material/ParFoldMap.hs}
+
+
+\codefile{haskell}{caption={Wookie.txt}, label={Wookie.txt}}{../material/Wookie.txt_ASCII}
+
+\codefile{haskell}{caption={WordState.hs}, label={WordState.hs}}{../material/WordState.hs_ASCII}
+
+\codefile{haskell}{caption={allWords.hs}, label={allWords.hs}}{../material/allWords.hs}
 
 
 
